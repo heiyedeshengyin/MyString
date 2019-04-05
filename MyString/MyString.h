@@ -38,6 +38,7 @@ public:
 	char set(int index, char c);
 	char remove(int index);
 	char operator[](int index);
+	mystring operator+(const mystring& add_str);
 };
 
 mystring::mystring()
@@ -120,8 +121,9 @@ void mystring::add(int index, char c)
 				new_str[i] = str[i];
 			new_str[index] = c;
 			for (int i = index; i < length; i++)
-				new_str[i + 1] = str[index];
+				new_str[i + 1] = str[i];
 		}
+		new_str[length + 1] = '\0';
 		delete str;
 		str = new_str;
 		length++;
@@ -164,7 +166,7 @@ char mystring::remove(int index)
 	else
 	{
 		char* new_str;
-		new_str = new char[length - 1];
+		new_str = new char[length];
 		char return_char;
 		if (index == 0)
 		{
@@ -180,6 +182,7 @@ char mystring::remove(int index)
 			for (int i = index; i < length - 1; i++)
 				new_str[i] = str[i + 1];
 		}
+		new_str[length - 1] = '\0';
 		delete str;
 		str = new_str;
 		length--;
@@ -198,7 +201,42 @@ char mystring::operator[](int index)
 		return str[index];
 }
 
-ostream& operator<<(ostream& os, mystring& str)
+mystring mystring::operator+(const mystring& add_str)
+{
+	if (length == 0 && add_str.length == 0)
+	{
+		mystring result;
+		return result;
+	}
+	if (length != 0 && add_str.length == 0)
+	{
+		mystring result(*this);
+		return result;
+	}
+	if (length == 0 && add_str.length != 0)
+	{
+		mystring result(add_str);
+		return result;
+	}
+	if (length != 0 && add_str.length != 0)
+	{
+		char* new_str;
+		int new_str_length = length + add_str.length;
+		new_str = new char[new_str_length + 1];
+		for (int i = 0; i < length; i++)
+			new_str[i] = str[i];
+		for (int i = 0; i < add_str.length; i++)
+			new_str[length + i] = add_str.str[i];
+		new_str[new_str_length] = '\0';
+		
+		mystring result;
+		result.str = new_str;
+		result.length = new_str_length;
+		return result;
+	}
+}
+
+ostream& operator<<(ostream& os, mystring str)
 {
 	if (str.get_length() == 0)
 		return os;
