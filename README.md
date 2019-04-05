@@ -8,7 +8,8 @@
 [红黑树](https://github.com/heiyedeshengyin/RedBlackTree)
 
 ### 简介
-字符串，基本的数据结构 
+字符串，基本的数据结构  
+注意:目前只能存储ASCII码表中的字符
 
 ### 数据结构
 ```cpp

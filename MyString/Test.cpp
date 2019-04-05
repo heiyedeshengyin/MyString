@@ -5,11 +5,11 @@
 
 int main()
 {
-	mystring ms1("lallalalal");
-	cout << ms1 << endl;
+	mystring ms1("asfwetg");
 	cout << ms1.get_length() << endl;
-
-	return 0;
+	cout << ms1.remove(0) << endl;
+	cout << ms1.get_length() << endl;
+	cout << ms1 << endl;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
