@@ -20,26 +20,27 @@
 #include <cstring>
 using namespace std;
 
-class MyString
+class mystring
 {
 private:
 	char* str;
 	int length;
 public:
-	MyString();
-	MyString(const char* _str);
-	MyString(const MyString& ano);
-	~MyString();
-
+	mystring();
+	mystring(const char* _str);
+	mystring(const mystring& ano);
+	~mystring();
+	int get_length();
+	char get(int index);
 };
 
-MyString::MyString()
+mystring::mystring()
 {
 	str = nullptr;
 	length = 0;
 }
 
-MyString::MyString(const char* _str)
+mystring::mystring(const char* _str)
 {
 	length = strlen(_str);
 	if (length == 0)
@@ -53,7 +54,7 @@ MyString::MyString(const char* _str)
 	}
 }
 
-MyString::MyString(const MyString& ano)
+mystring::mystring(const mystring& ano)
 {
 	length = ano.length;
 	if (length == 0)
@@ -67,13 +68,39 @@ MyString::MyString(const MyString& ano)
 	}
 }
 
-MyString::~MyString()
+mystring::~mystring()
 {
 	if (length != 0)
 		delete str;
 }
 
+int mystring::get_length()
+{
+	return length;
+}
 
+char mystring::get(int index)
+{
+	if (index < 0 && index >= length)
+	{
+		cout << "get函数错误,index为非法值" << endl;
+		return '\0';
+	}
+	else
+		return str[index];
+}
+
+ostream& operator<<(ostream& os, mystring& str)
+{
+	if (str.get_length() == 0)
+		return os;
+	else
+	{
+		for (int i = 0; i < str.get_length(); i++)
+			os << str.get(i);
+		return os;
+	}
+}
 
 #endif // !MYSTRING_H
 
