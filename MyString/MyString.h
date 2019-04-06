@@ -38,6 +38,8 @@ public:
 	char set(int index, char c);
 	char remove(int index);
 	int index(const mystring& target_str);
+	int index_kmp(const mystring& target_str);
+	friend int* get_next_kmp(const mystring& target_str);
 	char operator[](int index);
 	mystring operator+(const mystring& add_str);
 	bool operator==(const mystring& compare_str);
@@ -227,6 +229,69 @@ int mystring::index(const mystring& target_str)
 		else
 			return -1;
 	}
+}
+
+int mystring::index_kmp(const mystring& target_str)
+{
+	if (length < target_str.length)
+	{
+		cout << "index函数:模式串长度大于主串长度" << endl;
+		return -1;
+	}
+	else if (length == target_str.length)
+		if (*this == target_str)
+			return 0;
+		else
+			return -1;
+	else
+	{
+		if (target_str.length == 0)
+			return -1;
+
+		int i = 0;
+		int j = 0;
+		int* next = get_next_kmp(target_str);
+		while (i < length && j < target_str.length)
+			if (j == -1 || str[i] == target_str.str[j])
+			{
+				i++;
+				j++;
+			}
+			else
+				j = next[j];
+		if (j >= target_str.length)
+			return i - target_str.length;
+		else
+			return -1;
+	}
+}
+
+int* get_next_kmp(const mystring& target_str)
+{
+	int* next;
+	if (target_str.length == 0)
+		next = nullptr;
+	else
+	{
+		next = new int[target_str.length];
+		next[0] = -1;
+		int i = 0;
+		int j = -1;
+		while (i < target_str.length - 1)
+			if (j == -1 || target_str.str[i] == target_str.str[j])
+			{
+				i++;
+				j++;
+				if (target_str.str[i] == target_str.str[j])
+					next[i] = next[j];
+				else
+					next[i] = j;
+			}
+			else
+				j = next[j];
+	}
+
+	return next;
 }
 
 char mystring::operator[](int index)

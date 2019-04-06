@@ -8,7 +8,7 @@ int main()
 	mystring ms1("asdfgheghe");
 	mystring ms2("ghe");
 
-	cout << ms1.index(ms2) << endl;
+	cout << ms1.index_kmp(ms2) << endl;
 
 	return 0;
 }
