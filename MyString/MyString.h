@@ -37,8 +37,10 @@ public:
 	char get(int index);
 	char set(int index, char c);
 	char remove(int index);
+	int index(const mystring& target_str);
 	char operator[](int index);
 	mystring operator+(const mystring& add_str);
+	bool operator==(const mystring& compare_str);
 };
 
 mystring::mystring()
@@ -190,6 +192,43 @@ char mystring::remove(int index)
 	}
 }
 
+int mystring::index(const mystring& target_str)
+{
+	if (length < target_str.length)
+	{
+		cout << "index函数:模式串长度大于主串长度" << endl;
+		return -1;
+	}
+	else if (length == target_str.length)
+		if (*this == target_str)
+			return 0;
+		else
+			return -1;
+	else
+	{
+		if (target_str.length == 0)
+			return -1;
+
+		int i = 0;
+		int j = 0;
+		while (i < length && j < target_str.length)
+			if (str[i] == target_str.str[j])
+			{
+				i++;
+				j++;
+			}
+			else
+			{
+				i = i - j + 1;
+				j = 0;
+			}
+		if (j >= target_str.length)
+			return i - target_str.length;
+		else
+			return -1;
+	}
+}
+
 char mystring::operator[](int index)
 {
 	if (index < 0 || index >= length)
@@ -234,6 +273,18 @@ mystring mystring::operator+(const mystring& add_str)
 		result.length = new_str_length;
 		return result;
 	}
+}
+
+bool mystring::operator==(const mystring& compare_str)
+{
+	if (length == compare_str.length)
+	{
+		for (int i = 0; i < length; i++)
+			if (str[i] != compare_str.str[i])
+				return false;
+		return true;
+	}
+	return false;
 }
 
 ostream& operator<<(ostream& os, mystring str)

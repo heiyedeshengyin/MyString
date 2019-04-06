@@ -5,15 +5,12 @@
 
 int main()
 {
-	mystring ms1("qwrhsfgh");
-	cout << ms1.get_length() << endl;
-	
-	mystring ms2("wrewt");
-	cout << ms2.get_length() << endl;
-	
-	mystring ms3 = ms2 + ms2 + ms1;
-	cout << ms3 << endl;
-	cout << ms3.get_length() << endl;
+	mystring ms1("asdfgheghe");
+	mystring ms2("ghe");
+
+	cout << ms1.index(ms2) << endl;
+
+	return 0;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
