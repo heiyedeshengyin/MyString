@@ -6,9 +6,9 @@
 int main()
 {
 	mystring ms1("asdfgheghe");
-	mystring ms2("ghe");
+	
 
-	cout << ms1.index_kmp(ms2) << endl;
+	cout << ms1.sub_string(4) << endl;
 
 	return 0;
 }

@@ -20,37 +20,52 @@
 #include <cstring>
 using namespace std;
 
+//----------------数据结构----------------
+/*字符串*/
 class mystring
 {
 private:
-	char* str;
-	int length;
+	char* str;	//封装的字符数组
+	int length;	//字符串的长度
 public:
-	mystring();
-	mystring(const char* _str);
-	mystring(const mystring& ano);
-	~mystring();
-	int get_length();
-	bool empty();
-	void clear();
-	void add(int index, char c);
-	char get(int index);
-	char set(int index, char c);
-	char remove(int index);
-	int index(const mystring& target_str);
-	int index_kmp(const mystring& target_str);
+	mystring();	//无参构造函数
+	mystring(const char* _str);	//有参构造函数
+	mystring(const mystring& ano);	//拷贝构造函数
+	~mystring();	//析构函数
+	int get_length();	//获取字符个数
+	bool empty();	//判断是否为空
+	void clear();	//把字符串清空
+	void add(int index, char c);	//增加一个字符
+	char get(int index);	//获取一个字符
+	char set(int index, char c);	//改变一个字符
+	char remove(int index);	//删除一个字符
+	int index(const mystring& target_str);	//查询子串的位置
+	int index(const mystring& target_str, int from_index);
+	int index_kmp(const mystring& target_str);	//用KMP算法查询子串的位置
+	int index_kmp(const mystring& target_str, int from_index);
 	friend int* get_next_kmp(const mystring& target_str);
-	char operator[](int index);
-	mystring operator+(const mystring& add_str);
-	bool operator==(const mystring& compare_str);
+	mystring sub_string(int begin_index);	//截取字符串
+	mystring sub_string(int begin_index, int end_index);
+	char operator[](int index);	//重载[]运算符
+	mystring operator+(const mystring& add_str);	//重载+运算符
+	bool operator==(const mystring& compare_str);	//重载==运算符
 };
 
+//----------------函数的具体实现----------------
+/*
+	无参构造函数
+*/
 mystring::mystring()
 {
 	str = nullptr;
 	length = 0;
 }
 
+/*
+	有参构造函数
+
+	const char* _str:传入的字符串
+*/
 mystring::mystring(const char* _str)
 {
 	length = strlen(_str);
@@ -65,6 +80,11 @@ mystring::mystring(const char* _str)
 	}
 }
 
+/*
+	拷贝构造函数
+
+	const mystring& ano:被拷贝的字符串
+*/
 mystring::mystring(const mystring& ano)
 {
 	length = ano.length;
@@ -79,22 +99,40 @@ mystring::mystring(const mystring& ano)
 	}
 }
 
+/*
+	析构函数
+*/
 mystring::~mystring()
 {
 	if (length != 0)
 		delete str;
 }
 
+/*
+	获取字符的个数
+
+	@Return int
+*/
 int mystring::get_length()
 {
 	return length;
 }
 
+/*
+	判断字符串是否为空
+
+	@Return bool
+*/
 bool mystring::empty()
 {
 	return length == 0;
 }
 
+/*
+	清空字符串
+
+	@Return void
+*/
 void mystring::clear()
 {
 	if (length != 0)
@@ -105,6 +143,13 @@ void mystring::clear()
 	}
 }
 
+/*
+	增加一个字符
+	int index:增加之后增加的字符所在的索引
+	char c:增加的字符
+
+	@Return void
+*/
 void mystring::add(int index, char c)
 {
 	if (index < 0 || index > length)
@@ -134,6 +179,12 @@ void mystring::add(int index, char c)
 	}
 }
 
+/*
+	获取一个字符
+	int index:获取的字符所在的索引
+
+	@Return char
+*/
 char mystring::get(int index)
 {
 	if (index < 0 || index >= length)
@@ -145,6 +196,13 @@ char mystring::get(int index)
 		return str[index];
 }
 
+/*
+	改变一个字符
+	int index:改变的字符所在的索引
+	char c:改变后的字符
+
+	@Return char
+*/
 char mystring::set(int index, char c)
 {
 	if (index < 0 || index >= length)
@@ -160,6 +218,12 @@ char mystring::set(int index, char c)
 	}
 }
 
+/*
+	删除一个字符
+	int index:删除的字符所在的索引
+
+	@Return char
+*/
 char mystring::remove(int index)
 {
 	if (index < 0 || index >= length)
@@ -194,11 +258,29 @@ char mystring::remove(int index)
 	}
 }
 
+/*
+	获取子串第一次出现在字符串中的索引
+	const mystring& target_str:子串
+
+	@Return int
+*/
 int mystring::index(const mystring& target_str)
+{
+	return index(target_str, 0);
+}
+
+/*
+	获取子串从指定位置开始第一次出现在字符串中的索引
+	const mystring& target_str:子串
+	int from_index:开始位置的索引
+
+	@Return int
+*/
+int mystring::index(const mystring& target_str, int from_index)
 {
 	if (length < target_str.length)
 	{
-		cout << "index函数:模式串长度大于主串长度" << endl;
+		cout << "index函数错误:模式串长度大于主串长度" << endl;
 		return -1;
 	}
 	else if (length == target_str.length)
@@ -211,7 +293,7 @@ int mystring::index(const mystring& target_str)
 		if (target_str.length == 0)
 			return -1;
 
-		int i = 0;
+		int i = from_index;
 		int j = 0;
 		while (i < length && j < target_str.length)
 			if (str[i] == target_str.str[j])
@@ -231,11 +313,29 @@ int mystring::index(const mystring& target_str)
 	}
 }
 
+/*
+	使用KMP算法,获取子串第一次出现在字符串中的索引
+	const mystring& target_str:子串
+
+	@Return int
+*/
 int mystring::index_kmp(const mystring& target_str)
+{
+	return index_kmp(target_str, 0);
+}
+
+/*
+	使用KMP算法,获取子串从指定位置开始第一次出现在字符串中的索引
+	const mystring& target_str:子串
+	int from_index:开始位置的索引
+
+	@Return int
+*/
+int mystring::index_kmp(const mystring& target_str, int from_index)
 {
 	if (length < target_str.length)
 	{
-		cout << "index函数:模式串长度大于主串长度" << endl;
+		cout << "index_kmp函数错误:模式串长度大于主串长度" << endl;
 		return -1;
 	}
 	else if (length == target_str.length)
@@ -248,7 +348,7 @@ int mystring::index_kmp(const mystring& target_str)
 		if (target_str.length == 0)
 			return -1;
 
-		int i = 0;
+		int i = from_index;
 		int j = 0;
 		int* next = get_next_kmp(target_str);
 		while (i < length && j < target_str.length)
@@ -266,6 +366,12 @@ int mystring::index_kmp(const mystring& target_str)
 	}
 }
 
+/*
+	获取字符串在KMP算法中的next数组
+	const mystring& target_str:字符串
+
+	@Return int*
+*/
 int* get_next_kmp(const mystring& target_str)
 {
 	int* next;
@@ -294,6 +400,69 @@ int* get_next_kmp(const mystring& target_str)
 	return next;
 }
 
+/*
+	截取字符串,从指定起始位置到结尾
+	int begin_index:开始位置的索引
+
+	@Return mystring
+*/
+mystring mystring::sub_string(int begin_index)
+{
+	mystring return_str;
+	if (begin_index < 0 || begin_index >= length)
+	{
+		cout << "sub_string函数错误,index为非法值" << endl;
+		return return_str;
+	}
+	else
+	{
+		char* result;
+		result = new char[length - begin_index + 1];
+		return_str.length = length - begin_index;
+		for (int i = 0; i < return_str.length; i++)
+			result[i] = str[begin_index + i];
+		result[return_str.length] = '\0';
+
+		return_str.str = result;
+	}
+	return return_str;
+}
+
+/*
+	截取字符串,从指定起始位置到指定结束位置
+	int begin_index:开始位置的索引
+	int end_index:结束位置的索引
+
+	@Return mystring
+*/
+mystring mystring::sub_string(int begin_index, int end_index)
+{
+	mystring return_str;
+	if (begin_index < 0 || begin_index >= length || end_index < 0 || end_index >= length || begin_index >= end_index)
+	{
+		cout << "sub_string函数错误,index为非法值" << endl;
+		return return_str;
+	}
+	else
+	{
+		char* result;
+		result = new char[end_index - begin_index + 1];
+		return_str.length = end_index - begin_index;
+		for (int i = 0; i < return_str.length; i++)
+			result[i] = str[begin_index + i];
+		result[return_str.length] = '\0';
+
+		return_str.str = result;
+	}
+	return return_str;
+}
+
+/*
+	重载[]运算符
+	int index:索引
+
+	@Return char
+*/
 char mystring::operator[](int index)
 {
 	if (index < 0 || index >= length)
@@ -305,6 +474,12 @@ char mystring::operator[](int index)
 		return str[index];
 }
 
+/*
+	重载+运算符,使两个字符串拼接到一起
+	const mystring& add_str:字符串
+
+	@Return mystring
+*/
 mystring mystring::operator+(const mystring& add_str)
 {
 	if (length == 0 && add_str.length == 0)
@@ -340,6 +515,12 @@ mystring mystring::operator+(const mystring& add_str)
 	}
 }
 
+/*
+	重载==运算符,判断两个字符串是否完全相等
+	const mystring& compare_str:字符串
+
+	@Return bool
+*/
 bool mystring::operator==(const mystring& compare_str)
 {
 	if (length == compare_str.length)
@@ -352,6 +533,13 @@ bool mystring::operator==(const mystring& compare_str)
 	return false;
 }
 
+/*
+	重载<<运算符
+	ostream& os:输出流
+	mystring str:输出的字符串
+
+	@Return ostream&
+*/
 ostream& operator<<(ostream& os, mystring str)
 {
 	if (str.get_length() == 0)
